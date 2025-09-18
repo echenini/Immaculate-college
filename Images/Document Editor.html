@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0038)http://localhost/complexai/design.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+<title>Document Editor</title>
+	<style>
+		body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #FFFF99;
+		}
+		
+		#toolbar {
+			background-color: #FFFF99;
+			padding: 1em;
+			border-bottom: 1px solid #ccc;
+		}
+		
+		#toolbar button {
+			margin-right: 1em;
+		}
+		
+		#editor {
+			width: 80%;
+			height: 400px;
+			padding: 1em;
+			font-size: 16px;
+		}
+.style2 {font-size: 36px; color: #;}
+    body,td,th {
+	color: #FFFF99;
+}
+.style4 {color: #FF0000}
+</style>
+</head>
+<body>
+<div align="center"><span class="style2">RR<span class="style4">RITA 's NOTEPAD</span>ITA'S NOTEPAD</span></div>
+<div id="toolbar">
+		<button id="bold">Bold</button>
+		<button id="italic">Italic</button>
+		<button id="underline">Underline</button>
+		<button id="left-align">Left Align</button>
+		<button id="center-align">Center Align</button>
+		<button id="right-align">Right Align</button>
+		<button id="colour">colour</button>
+</div>
+	<textarea id="editor" placeholder="Start typing..."></textarea>
+	
+	<script>
+		const editor = document.getElementById('editor');
+		const boldButton = document.getElementById('bold');
+		const italicButton = document.getElementById('italic');
+		const underlineButton = document.getElementById('underline');
+		const leftAlignButton = document.getElementById('left-align');
+		const centerAlignButton = document.getElementById('center-align');
+		const rightAlignButton = document.getElementById('right-align');
+		const colourButton = document.getElementById('colour');
+
+		boldButton.addEventListener('click', () => {
+			editor.style.fontWeight = 'bold';
+		});
+		
+		italicButton.addEventListener('click', () => {
+			editor.style.fontStyle = 'italic';
+		});
+		
+		underlineButton.addEventListener('click', () => {
+			editor.style.textDecoration = 'underline';
+		});
+		
+		leftAlignButton.addEventListener('click', () => {
+			editor.style.textAlign = 'left';
+		});
+		
+		centerAlignButton.addEventListener('click', () => {
+			editor.style.textAlign = 'center';
+		});
+		
+		rightAlignButton.addEventListener('click', () => {
+			editor.style.textAlign = 'right';
+		});
+		
+		colourButton.addEventListener('click', () => {
+			editor.style.textDecoration = 'colour';
+		});
+	</script>
+
+</body></html>
