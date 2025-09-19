@@ -1,52 +1,43 @@
 <?php
-//heading
-include("heading.php");
-?>
-<?php require_once('config.php'); ?>
+session_start(); // MUST be first
 
-/*if(isset($_SESSION["loggedin"] && $_SESSION["loggedin"]=== true){
-	header("location: welcome.php");
-		exit;
-}*/
-$loginFormAction = $_SERVER['PHP_SELF'];
-if(isset($_GET['accesscheck'])){
-$_SESSION['prevUrl'] = $_GET['accesscheck'];
+require_once("config.php"); // db connection
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
+
+    // Prepare statement to avoid SQL injection
+    $sql = "SELECT id, username, password FROM tbluser WHERE username = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $username);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($result)) {
+        // Verify password (assuming it's hashed)
+        if (password_verify($password, $row['password'])) {
+            $_SESSION['loggedin'] = true;
+            $_SESSION['id'] = $row['id'];
+            $_SESSION['username'] = $row['username'];
+
+            header("Location: welcome.php");
+            exit;
+        } else {
+            header("Location: fail.html"); // wrong password
+            exit;
+        }
+    } else {
+        header("Location: fail.html"); // user not found
+        exit;
+    }
 }
-if(isset($_POST['username'])){
-$loginUsername = $_POST['username'];
-$password = $_POST['password'];
-$MM_redirectloginSuccess = "welcome.html";
-$MM_redirectloginFailed = "fail.html";
-
-@mysql_select_db($database, $New_Conn);
-
-$login_query = sprintf("SELECT username, password FROM tbluser WHERE username = '%s' AND password = '%s' ",
-get_magic_quotes_gpc() ? $loginUsername  : addslashes($loginUsername), get_magic_quotes_gpc() ? $password : addslashes($password));
-$login = @mysql_query($login_query, $New_Conn) or die(mysql_error());
- 
-$LoginFoundUser = mysql_num_rows($login);
-
-//checks for user
-   if($LoginFoundUser){
-   $LoginStrGroup = "";
-   
-   $_SESSION['MM_Username'] =$LoginUsername;
-   $_SESSION['MM_UserGroup'] =$LoginStrGroup;
-   
-   if(isset($_SESSION['prevUrl']) && false){
-   $MM_redirectloginSuccess = $_SESSION['prevUrl'];
-   }
-   		header("location: " . $MM_redirectloginSuccess);
-		}else{
-		header("location: " . $MM_redirectloginFailed);
-		}
-}		
-?> 				
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+?>
+<!DOCTYPE html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Login </title>
+<meta charset="UTF-8">
+<title>Login</title>
 <style>
  body {
        background-color: #dfe2e7;
@@ -54,7 +45,7 @@ $LoginFoundUser = mysql_num_rows($login);
     .log { 
   background-color: #dfe2e7;
   display: flex;
-  justify-content: center;
+justify-content: center;
   align-items: center;
   height: 100vh;
   margin: 0;
@@ -103,24 +94,18 @@ $LoginFoundUser = mysql_num_rows($login);
 </style>
 </head>
 <body>
- <div class="log">
-    <div class="register-right">
-      <h2 class="how" style="color:#18171d">Login</h2>
-      <div class="register-form">
-        <form id="form1" name="form1" method="post" action="">
-          <div class="">
-            <input name="username" type="text" id="username" placeholder="Enter your Username" required />
-            <label>USERNAME</label>
-          </div>
-          <div class="">
-           <input name="password" type="password"  id="password" placeholder="Enter your Password" required />
-            <label>PASSWORD</label>
-          </div>
-          <input type="submit" value="Login" />
-        </form>
-        <p class="lin">Don't have an Account? <a href="signin.php">Create Account</a></p>
-      </div>
-    </div>
+<div class="log">
+  <div class="register-right">
+    <h2 class="how">Login</h2>
+    <form method="post" action="login.php">
+      <input name="username" type="text" placeholder="Enter your Username" required />
+      <label>USERNAME</label>
+      <input name="password" type="password" placeholder="Enter your Password" required />
+      <label>PASSWORD</label>
+      <input type="submit" value="Login" />
+    </form>
+    <p>Don't have an Account? <a href="signin.php">Create Account</a></p>
   </div>
+</div>
 </body>
 </html>
