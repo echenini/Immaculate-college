@@ -93,6 +93,7 @@ justify-content: center;
     }
 </style>
 </head>
+<link rel="stylesheet" href="style.css">
 <body>
 <div class="log">
   <div class="register-right">
