@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Device Info Test</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background: #f3f3f3;
+    }
+    .card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        max-width: 500px;
+        margin: auto;
+    }
+    h2 { text-align: center; }
+</style>
+</head>
+
+<body>
+<div class="card">
+    <h2>Device Information</h2>
+
+    <p><strong>Device Model:</strong> <span id="device"></span></p>
+    <p><strong>Browser:</strong> <span id="browser"></span></p>
+    <p><strong>IP Address:</strong> <span id="ip"></span></p>
+    <p><strong>Location:</strong> <span id="location"></span></p>
+
+    <button onclick="getLocation()">Get Location</button>
+</div>
+
+
+<script>
+// DEVICE MODEL & BROWSER
+function getDeviceAndBrowser() {
+    const ua = navigator.userAgent;
+
+    // Basic device extraction (not 100% perfect, but works on most phones)
+    let device = "Unknown";
+    if (/iPhone/i.test(ua)) device = "iPhone";
+    else if (/iPad/i.test(ua)) device = "iPad";
+    else if (/Android/i.test(ua)) device = "Android Phone";
+    else if (/Windows/i.test(ua)) device = "Windows PC";
+    else if (/Mac/i.test(ua)) device = "Mac";
+
+    document.getElementById("device").textContent = device;
+
+    // Browser detection
+    let browser = "Unknown";
+    if (/Chrome/i.test(ua)) browser = "Chrome";
+    else if (/Safari/i.test(ua)) browser = "Safari";
+    else if (/Firefox/i.test(ua)) browser = "Firefox";
+    else if (/Edge/i.test(ua)) browser = "Edge";
+
+    document.getElementById("browser").textContent = browser;
+}
+getDeviceAndBrowser();
+
+
+// IP ADDRESS
+fetch("https://api.ipify.org?format=json")
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("ip").textContent = data.ip;
+    })
+    .catch(() => {
+        document.getElementById("ip").textContent = "Unable to fetch";
+    });
+
+
+// LOCATION (with permission)
+function getLocation() {
+    if (!navigator.geolocation) {
+        document.getElementById("location").textContent = "Not supported";
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            const lat = pos.coords.latitude.toFixed(5);
+            const lon = pos.coords.longitude.toFixed(5);
+            document.getElementById("location").textContent = `${lat}, ${lon}`;
+        },
+        () => {
+            document.getElementById("location").textContent = "Permission denied";
+        }
+    );
+}
+</script>
+
+</body>
+</html>
